@@ -1,32 +1,21 @@
-# Use official Ubuntu 22.04 base image
-FROM ubuntu:22.04
+# Use official Ubuntu 24.04 base image
+FROM ubuntu:24.04
 
 # Install prerequisites
-# curl: download ModusToolbox.tar.gz
-# git: download ModusToolbox project
-# make: build ModusToolbox projects
-# libglib2.0-0: Qt Configurators depend on libglib-2.0.so.0
-# libusb-1.0-0: OpenOCD, fw-loader, CapSense Tuner and DFU Host Tool depend in libusb-1.0.so.0
-# libgl1-mesa-glx: Qt Configurators depend on libGLX.so.0
+# curl: to download ModusToolbox-linux-install.deb
+# libglib2.0-0t64 libgl1 libegl1 libglx-mesa0 libopengl0 libdbus-1-3: Qt6 runtime dependencies
+# libpcre3: fw-loader dependency
+# libusb-1.0-0: OpenOCD, fw-loader, CapSense Tuner and DFU Host Tool dependency
 # libfontconfig1: bin/platforms/libqoffscreen.so depends on libfontconfig.so.1 and libfreetype.so.6
 ARG DEBIAN_FRONTEND=noninteractive
-RUN apt update -y \
- && apt install -y curl git make libglib2.0-0 libusb-1.0-0 libgl1-mesa-glx libfontconfig1 \
- && apt clean
+RUN apt update -y && apt install -y curl libglib2.0-0t64 libgl1 libegl1 libglx-mesa0 libopengl0 libdbus-1-3 libpcre3 libusb-1.0-0 libfontconfig1 && apt clean
 
-# Download and extract ModusToolbox 3.1
-RUN curl --fail --location --silent --show-error 'https://itoolspriv.infineon.com/itbhs/api/packages/com.ifx.tb.tool.modustoolbox/Versions/3.1.0.12257-public/artifacts/ModusToolbox_3.1.0.12257-linux-install.tar.gz/download?noredirect' -o /tmp/ModusToolbox_3.1.0.12257-linux-install.tar.gz \
- && tar -C /opt -zxf /tmp/ModusToolbox_3.1.0.12257-linux-install.tar.gz \
- && rm /tmp/ModusToolbox_3.1.0.12257-linux-install.tar.gz
-
-# Execute post-build scripts
-# Note:  udev does not support containers, install_rules.sh not executed
-RUN bash -e /opt/ModusToolbox/tools_3.1/modus-shell/postinstall
-# && sudo bash -e /opt/ModusToolbox/tools_3.1/openocd/udev_rules/install_rules.sh \
-# && sudo bash -e /opt/ModusToolbox/tools_3.1/driver_media/install_rules.sh \
-# && sudo bash -e /opt/ModusToolbox/tools_3.1/fw-loader/udev_rules/install_rules.sh
+# Download and install ModusToolbox 3.2
+RUN curl --fail --location --silent --show-error 'https://itoolspriv.infineon.com/itbhs/api/packages/com.ifx.tb.tool.modustoolbox/Versions/3.2.0.16028-public/artifacts/ModusToolbox_3.2.0.16028-linux-install.deb/download?noredirect' -o /tmp/ModusToolbox_3.2.0.16028-linux-install.deb \
+ && apt install -y /tmp/ModusToolbox_3.2.0.16028-linux-install.deb \
+ && rm /tmp/ModusToolbox_3.2.0.16028-linux-install.deb
 
 # Set environment variable required by ModusToolbox application makefiles
-ENV CY_TOOLS_PATHS="/opt/ModusToolbox/tools_3.1"
+ENV CY_TOOLS_PATHS="/opt/Tools/ModusToolbox/tools_3.2"
 # Set environment variable to avoid Qt warning
-ENV XDG_RUNTIME_DIR="/tmp"
+ENV XDG_RUNTIME_DIR="/tmp/runtime"

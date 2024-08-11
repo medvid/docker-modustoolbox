@@ -7,11 +7,11 @@ on:
 env:
   REGISTRY: docker.io
   IMAGE_NAME: vmmedvid/modustoolbox
-  MTB_TAG: mtb31
+  MTB_TAG: mtb32
 
 jobs:
   build-and-push-image:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: read
       packages: write
