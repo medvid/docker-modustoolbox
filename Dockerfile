@@ -11,6 +11,11 @@ FROM ubuntu:24.04
 ARG DEBIAN_FRONTEND=noninteractive
 RUN apt update -y && apt install -y curl sudo libglib2.0-0t64 libgl1 libegl1 libglx-mesa0 libopengl0 libdbus-1-3 libusb-1.0-0 libfontconfig1 libxcb-shape0 && apt clean
 
+# Download and install ModusToolbox™ programming tools 1.7.0
+RUN curl --fail --location --silent --show-error 'https://softwaretools-hosting.infineon.com/api/packages/com.ifx.tb.tool.modustoolboxprogtools/versions/1.7.0.1727/artifacts/ModusToolboxProgtools_1.7.0.1727.deb/download?noredirect' -o /tmp/ModusToolboxProgtools_1.7.0.1727.deb \
+ && apt install -y /tmp/ModusToolboxProgtools_1.7.0.1727.deb \
+ && rm /tmp/ModusToolboxProgtools_1.7.0.1727.deb
+
 # Download and install Arm GNU Toolchain 14.2.1
 RUN curl --fail --location --silent --show-error 'https://softwaretools-hosting.infineon.com/api/packages/com.ifx.tb.tool.mtbgccpackage/versions/14.2.1.265/artifacts/mtbgccpackage_14.2.1.265_Linux_x64.deb/download?noredirect' -o /tmp/mtbgccpackage_14.2.1.265_Linux_x64.deb \
  && apt install -y /tmp/mtbgccpackage_14.2.1.265_Linux_x64.deb \
@@ -21,12 +26,17 @@ RUN curl --fail --location --silent --show-error 'https://softwaretools-hosting.
  && apt install -y /tmp/modustoolboxedgeprotectsecuritysuite_1.6.1.525_Linux_x64.deb \
  && rm /tmp/modustoolboxedgeprotectsecuritysuite_1.6.1.525_Linux_x64.deb
 
-# Download and install ModusToolbox 3.6
-RUN curl --fail --location --silent --show-error 'https://softwaretools-hosting.infineon.com/api/packages/com.ifx.tb.tool.modustoolbox/versions/3.6.0.17979/artifacts/modustoolbox_3.6.0.17979_Linux_x64.deb/download?noredirect' -o /tmp/modustoolbox_3.6.0.17979_Linux_x64.deb \
- && apt install -y /tmp/modustoolbox_3.6.0.17979_Linux_x64.deb \
- && rm /tmp/modustoolbox_3.6.0.17979_Linux_x64.deb
+# Download and install ModusToolbox 3.7
+RUN curl --fail --location --silent --show-error 'https://softwaretools-hosting.infineon.com/api/packages/com.ifx.tb.tool.modustoolbox/versions/3.7.0.18135/artifacts/modustoolbox_3.7.0.18135_Linux_x64.deb/download?noredirect' -o /tmp/modustoolbox_3.7.0.18135_Linux_x64.deb \
+ && apt install -y /tmp/modustoolbox_3.7.0.18135_Linux_x64.deb \
+ && rm /tmp/modustoolbox_3.7.0.18135_Linux_x64.deb
+
+ # Download and install ModusToolbox™ CAPSENSE™ and Multi-Sense Pack
+RUN curl --fail --location --silent --show-error 'https://softwaretools-hosting.infineon.com/api/packages/com.ifx.tb.tool.modustoolboxpackmultisense/versions/1.3.0.537/artifacts/modustoolboxpackmultisense_1.3.0.537_Linux_x64.deb/download?noredirect' -o /tmp/modustoolboxpackmultisense_1.3.0.537_Linux_x64.deb \
+ && apt install -y /tmp/modustoolboxpackmultisense_1.3.0.537_Linux_x64.deb \
+ && rm /tmp/modustoolboxpackmultisense_1.3.0.537_Linux_x64.deb
 
 # Set environment variable required by ModusToolbox application makefiles
-ENV CY_TOOLS_PATHS="/opt/Tools/ModusToolbox/tools_3.6"
+ENV CY_TOOLS_PATHS="/opt/Tools/ModusToolbox/tools_3.7"
 # Set environment variable to avoid Qt warning
 ENV XDG_RUNTIME_DIR="/tmp/runtime"
